@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+ --logo:#ff3155;
+ --message:#c77dff;
+ --button:#ff3155;
+ --fond:#080810;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;padding:20px;background:var(--fond);
+ color:white;font-family:Arial,sans-serif;min-height:100vh;
+}
+#bgVideo{
+ position:fixed;inset:0;width:100%;height:100%;
+ object-fit:cover;z-index:-2;display:none;
+}
+#shade{position:fixed;inset:0;background:#080810cc;z-index:-1}
+.app{position:relative;z-index:1;max-width:600px;margin:auto}
+header{text-align:center;margin:25px 0}
+h1 {
+ font-family: "Arial Black", sans-serif;
+ font-size: 25px;
+ font-weight: 900;
+ text-align: center;
+ letter-spacing: 2px;
+ color: #ff3155;
+ text-shadow:
+  0 0 5px #ff3155,
+  0 0 12px #ff0033,
+  0 0 25px #8b00ff,
+  0 0 40px #8b00ff;
+ animation: peur 2s infinite alternate;
+}
+
+@keyframes peur {
+ from { text-shadow: 0 0 8px #ff3155; }
+ to {
+  text-shadow: 0 0 15px #ff0033, 0 0 35px #8b00ff;
+ }
+}
+input,textarea{
+ width:100%;padding:13px;margin:8px 0;
+ border-radius:8px;border:1px solid var(--message);
+ background:#090914;color:white;font-size:15px;
+}
+input[type=color]{height:48px;padding:4px}
+textarea{min-height:90px}
+button{
+ width:100%;
+ padding:15px;
+ margin-top:10px;
+ border:2px solid #c77dff;
+ border-radius:5px 15px 5px 15px;
+ background:linear-gradient(135deg,#ff1744,#6500a8);
+ color:white;
+ font-weight:900;
+ font-size:15px;
+ letter-spacing:2px;
+ text-shadow:0 0 8px white;
+ box-shadow:0 0 10px #ff3155,0 0 20px #8b00ff;
+}
+button:active{
+ transform:scale(0.97);
+}
+.secondary{background:#7133a8}
+#result,#adminResult,#themeResult{
+ margin-top:15px;padding:14px;background:#090914;
+ border-radius:8px;white-space:pre-wrap;line-height:1.5;
+}
+small{color:#bbb}
+.mediaPreview{max-width:100%;max-height:180px;margin-top:10px;border-radius:10px}
+.colorRow{display:grid;grid-template-columns:1fr 75px;gap:10px;align-items:center}
+@media (min-width: 500px) {
+ .app {
+  max-width: 1100px;
+ }
+
+ .app > section {
+  display: inline-block;
+  vertical-align: top;
+  width: 48%;
+  margin: 1%;
+ }
+
+ .app > header,
+ .app > footer {
+  display: block;
+  width: 100%;
+ }
+}
+
+h2 {
+  color: #c77dff;
+  text-align: center;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-shadow:
+    0 0 5px #c77dff,
+    0 0 12px #8b00ff,
+    0 0 22px #ff3155;
+  border-bottom: 2px solid #ff3155;
+  padding-bottom: 8px;
+}
+.panel {
+background: linear-gradient(145deg, #17101f, #080810);
+  border: 2px solid #ff3155;
+  border-radius: 5px 20px 5px 20px;
+  box-shadow:
+    0 0 8px #ff3155,
+    0 0 18px #8b00ff,
+    inset 0 0 15px #8b00ff44;
+  padding: 20px;
+  margin: 18px 0;
+}
+</style>
+ <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ff3155">
+</head>
+<body>
+
+<video id="bgVideo" loop muted playsinline></video>
+<div id="shade"></div>
+
+<div class="app">
+<header>
+<h1 id="appLogo">☠️ ꧁༒☬ 𝙊𝙇𝘼 𝘾𝙃E𝘾𝙆 𝘽𝘼𝙉 ☬༒꧂☠️</h1>
+<p>SECURITY CONTROL CENTER</p>
+</header>
+
+<section class="panel">
+<h2>🔎 VÉRIFICATION WHATSAPP</h2>
+<input id="searchNumber" placeholder="Entre un numéro de téléphone">
+<button onclick="checkNumber()">LANCER LA VÉRIFICATION</button>
+<div id="result">En attente d'une vérification.</div>
+</section>
+
+<section class="panel">
+<h2>🔐 ESPACE ADMINISTRATEUR</h2>
+<p><small>Personnalise le message affiché lorsque le statut ne peut pas être confirmé.</small></p>
+<textarea id="customMessage" placeholder="Écris ton message personnalisé ici..."></textarea>
+<button onclick="saveMessage()">ENREGISTRER LE MESSAGE</button>
+<div id="adminResult"></div>
+</section>
+
+<section class="panel">
+<h2>🎨 MON APPARENCE</h2>
+<p><small>Choisis les couleurs que tu préfères.</small></p>
+
+<label>Couleur du logo</label>
+<div class="colorRow">
+<input type="text" id="logoHex" value="#ff3155">
+<input type="color" id="logoColor" value="#ff3155">
+</div>
+
+<label>Couleur des messages</label>
+<div class="colorRow">
+<input type="text" id="messageHex" value="#c77dff">
+<input type="color" id="messageColor" value="#c77dff">
+</div>
+
+<label>Couleur des boutons</label>
+<div class="colorRow">
+<input type="text" id="buttonHex" value="#ff3155">
+<input type="color" id="buttonColor" value="#ff3155">
+</div>
+
+<label>Couleur du fond</label>
+<div class="colorRow">
+<input type="text" id="fondHex" value="#080810">
+<input type="color" id="fondColor" value="#080810">
+</div>
+
+<button onclick="applyTheme()">APPLIQUER MON THÈME</button>
+<button class="secondary" onclick="saveTheme()">💾 ENREGISTRER MON THÈME</button>
+<button class="secondary" onclick="resetTheme()">RÉINITIALISER LES COULEURS</button>
+<div id="themeResult"></div>
+</section>
+
+<section class="panel">
+<h2>🌈 COULEURS RAPIDES</h2>
+<p><small>Choisis une ambiance en un seul toucher.</small></p>
+<button onclick="preset('#ff3155','#c77dff','#ff3155','#080810')">❤️ ROUGE & VIOLET</button>
+<button onclick="preset('#168cff','#00d5d5','#168cff','#071321')">💙 BLEU ÉLECTRIQUE</button>
+<button onclick="preset('#00dc83','#ffe34d','#00a86b','#06140e')">💚 VERT NÉON</button>
+<button onclick="preset('#ff54bd','#9b59ff','#ff54bd','#160817')">💗 ROSE & VIOLET</button>
+<button onclick="preset('#ff8a24','#ffe34d','#ff8a24','#171006')">🧡 ORANGE & OR</button>
+<button onclick="preset('#ffffff','#d6a843','#d6a843','#080810')">👑 NOIR & OR</button>
+</section>
+
+<section class="panel">
+<h2>🎵 MON UNIVERS MULTIMÉDIA</h2>
+
+<p>🖼️ Choisir une photo en arrière-plan</p>
+<input type="file" id="photoFile" accept="image/*">
+<img id="photoPreview" class="mediaPreview" style="display:none">
+
+<p>🎬 Choisir une vidéo en arrière-plan</p>
+<input type="file" id="videoFile" accept="video/*">
+
+<p>🎵 Choisir une musique</p>
+<input type="file" id="musicFile" accept="audio/*">
+
+<button onclick="toggleMusic()" class="secondary" id="musicButton">▶️ LANCER LA MUSIQUE</button>
+<p id="mediaStatus"><small>Choisis tes fichiers pour personnaliser ton application.</small></p>
+<audio id="musicPlayer" loop></audio>
+</section>
+
+<footer style="text-align:center;color:#aaa;font-size:12px">
+OLA CHECK BAN — Statut WhatsApp non confirmé sans source officielle.
+</footer>
+</div>
+
+<script>
+function validHex(value){
+ return /^#[0-9a-fA-F]{6}$/.test(value);
+}
+
+function setColor(name,value){
+ document.documentElement.style.setProperty("--"+name,value);
+}
+
+function applyTheme(){
+ const values={
+  logo:document.getElementById("logoHex").value,
+  message:document.getElementById("messageHex").value,
+  button:document.getElementById("buttonHex").value,
+  fond:document.getElementById("fondHex").value
+ };
+ for(const name in values){
+  if(!validHex(values[name])){
+   document.getElementById("themeResult").textContent="Une couleur est incorrecte. Utilise le format #RRGGBB.";
+   return;
+  }
+ }
+ for(const name in values){
+  setColor(name,values[name]);
+  document.getElementById(name+"Color").value=values[name];
+ }
+ document.getElementById("themeResult").textContent="Ton thème est appliqué !";
+}
+
+function saveTheme(){
+ applyTheme();
+ const names=["logo","message","button","fond"];
+ const theme={};
+ names.forEach(n=>theme[n]=document.getElementById(n+"Hex").value);
+ if(names.some(n=>!validHex(theme[n])))return;
+ localStorage.setItem("olaTheme",JSON.stringify(theme));
+ document.getElementById("themeResult").textContent="Ton thème est enregistré sur cet appareil !";
+}
+
+function loadTheme(){
+ const theme=JSON.parse(localStorage.getItem("olaTheme")||"null");
+ if(!theme)return;
+ ["logo","message","button","fond"].forEach(n=>{
+  if(validHex(theme[n])){
+   document.getElementById(n+"Hex").value=theme[n];
+   document.getElementById(n+"Color").value=theme[n];
+  }
+ });
+ applyTheme();
+}
+
+function resetTheme(){
+ const defaults={logo:"#ff3155",message:"#c77dff",button:"#ff3155",fond:"#080810"};
+ for(const n in defaults){
+  document.getElementById(n+"Hex").value=defaults[n];
+  document.getElementById(n+"Color").value=defaults[n];
+ }
+ localStorage.removeItem("olaTheme");
+ applyTheme();
+ document.getElementById("themeResult").textContent="Thème initial restauré.";
+}
+
+function preset(logo,message,button,fond){
+ const values={logo,message,button,fond};
+ for(const n in values){
+  document.getElementById(n+"Hex").value=values[n];
+  document.getElementById(n+"Color").value=values[n];
+ }
+ applyTheme();
+}
+
+["logo","message","button","fond"].forEach(n=>{
+ document.getElementById(n+"Color").addEventListener("input",e=>{
+  document.getElementById(n+"Hex").value=e.target.value;
+  applyTheme();
+ });
+});
+
+function saveMessage(){
+ const message=document.getElementById("customMessage").value.trim();
+ if(!message){
+  document.getElementById("adminResult").textContent="Écris un message.";
+  return;
+ }
+ localStorage.setItem("olaMessage",message);
+ document.getElementById("adminResult").textContent="Message enregistré !";
+}
+
+function checkNumber(){
+ const number=document.getElementById("searchNumber").value.replace(/[\s()+.-]/g,"");
+ const result=document.getElementById("result");
+ if(!/^\d{6,15}$/.test(number)){
+  result.textContent="Entre un numéro valide.";
+  return;
+ }
+ const message=localStorage.getItem("olaMessage")||"Aucune confirmation officielle disponible pour ce numéro.";
+ result.textContent="STATUT : NON CONFIRMÉ\n\n"+message;
+}
+
+let photoURL=null,videoURL=null,musicURL=null;
+
+document.getElementById("photoFile").addEventListener("change",function(){
+ const file=this.files[0];if(!file)return;
+ if(photoURL)URL.revokeObjectURL(photoURL);
+ photoURL=URL.createObjectURL(file);
+ document.body.style.backgroundImage="url('"+photoURL+"')";
+ document.body.style.backgroundSize="cover";
+ document.body.style.backgroundPosition="center";
+ document.getElementById("photoPreview").src=photoURL;
+ document.getElementById("photoPreview").style.display="block";
+ document.getElementById("bgVideo").style.display="none";
+ document.getElementById("mediaStatus").textContent="Photo appliquée en arrière-plan.";
+});
+
+document.getElementById("videoFile").addEventListener("change",function(){
+ const file=this.files[0];if(!file)return;
+ if(videoURL)URL.revokeObjectURL(videoURL);
+ videoURL=URL.createObjectURL(file);
+ const video=document.getElementById("bgVideo");
+ video.src=videoURL;video.style.display="block";video.play();
+ document.body.style.backgroundImage="none";
+ document.getElementById("mediaStatus").textContent="Vidéo appliquée en arrière-plan.";
+});
+
+document.getElementById("musicFile").addEventListener("change",function(){
+ const file=this.files[0];if(!file)return;
+ if(musicURL)URL.revokeObjectURL(musicURL);
+ musicURL=URL.createObjectURL(file);
+ const audio=document.getElementById("musicPlayer");
+ audio.src=musicURL;audio.load();
+ document.getElementById("musicButton").textContent="▶️ LANCER LA MUSIQUE";
+ document.getElementById("mediaStatus").textContent="Musique chargée. Appuie pour l'écouter.";
+});
+
+async function toggleMusic(){
+ const audio=document.getElementById("musicPlayer");
+ const button=document.getElementById("musicButton");
+ if(!audio.src){
+  document.getElementById("mediaStatus").textContent="Choisis d'abord une musique.";
+  return;
+ }
+ if(audio.paused){
+  try{await audio.play();button.textContent="⏸️ METTRE EN PAUSE";}
+  catch(e){document.getElementById("mediaStatus").textContent="Impossible de lire ce fichier audio.";}
+ }else{
+  audio.pause();button.textContent="▶️ REPRENDRE LA MUSIQUE";
+ }
+}
+
+loadTheme();
+</script>
+ <script>
+ if ("serviceWorker" in navigator) {
+   window.addEventListener("load", () => {
+     navigator.serviceWorker.register("./service-worker.js")
+       .catch(error => console.log("Erreur service worker :", error));
+   });
+ }
+ </script>
+</body>
+</html>
+
